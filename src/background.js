@@ -1,8 +1,15 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import {
+  app,
+  protocol,
+  BrowserWindow,
+  globalShortcut,
+  clipboard,
+} from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
+import { send } from "process";
 
 const path = require("path");
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -38,6 +45,20 @@ async function createWindow() {
   }
 }
 
+function globalShortcutInit() {
+  const ret = globalShortcut.register("Control+Command+V", () => {
+    sendToRenderer(clipboard.readText());
+  });
+
+  if (!ret) {
+    console.log("registration failed");
+  }
+}
+
+function sendToRenderer(data) {
+  win.webContents.send("defaultChannel", data);
+}
+
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
   // On macOS it is common for applications and their menu bar
@@ -66,9 +87,10 @@ app.on("ready", async () => {
     }
   }
   createWindow();
-  win.webContents.on("did-finish-load", () => {
-    win.webContents.send("defaultChannel", "whoooooooh!");
-  });
+  globalShortcutInit();
+  // win.webContents.on("did-finish-load", () => {
+  //   sendToRenderer("hello");
+  // });
 });
 
 // Exit cleanly on request from parent process in development mode.
