@@ -23,8 +23,8 @@ let win = null;
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1228,
+    height: 830,
     thickFrame: true,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
