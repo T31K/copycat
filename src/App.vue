@@ -1,33 +1,35 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div id="app">
+    <div v-for="(item, key) in list" :key="key">
+      {{ item }}
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
 export default {
   name: "App",
-  components: {
-    HelloWorld,
+  data() {
+    return {
+      list: [1, 2, 3],
+    };
   },
   mounted() {
-    console.log(
+    this.receiveMessage();
+  },
+  methods: {
+    receiveMessage() {
       window.ipcRenderer.receive("defaultChannel", (message) => {
         console.log(message); // Prints 'whoooooooh!'
-      })
-    );
+      });
+    },
   },
 };
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  height: 800px;
+  width: 600px;
 }
 </style>
