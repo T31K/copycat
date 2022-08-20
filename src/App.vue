@@ -117,9 +117,18 @@
     >
       <div class="border rounded-xl h-[85vh]" id="code">
         <div v-for="(item, key) in list" :key="key">
-          <pre><code class="language-markup">
-              <div>{{item}} </div>
-              </code></pre>
+          <CodeEditor
+            v-model="hello"
+            language_selector
+            :languages="[
+              ['javascript', 'JS'],
+              ['cpp', 'C++'],
+              ['python', 'Python'],
+            ]"
+            width="100%"
+            height="500px"
+            :wrap_code="true"
+          ></CodeEditor>
         </div>
       </div>
     </main>
@@ -127,21 +136,20 @@
 </template>
 
 <script>
-import Prism from "prismjs";
-import "prismjs/themes/prism.css";
+import CodeEditor from "simple-code-editor";
 
 export default {
   name: "App",
+  components: { CodeEditor },
   data() {
     return {
       list: ["hello"],
+      hello: "console.log('hello')",
       navList: [{ label: "New" }, { label: "Favourites" }],
     };
   },
   mounted() {
     this.receiveMessage();
-    window.Prism = window.Prism || {};
-    Prism.highlightAll();
   },
   methods: {
     receiveMessage() {
