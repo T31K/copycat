@@ -1,7 +1,7 @@
 <template>
   <div class="relative bg-yellow-50 overflow-hidden max-h-screen">
     <header
-      class="fixed right-0 top-0 left-0 bg-yellow-50 py-3 px-4 h-16 draggable"
+      class="fixed right-0 top-0 left-[26em] bg-yellow-50 py-3 px-4 h-16 draggable"
     >
       <div class="flex items-center justify-between">
         <div>
@@ -59,7 +59,12 @@
     </header>
 
     <aside
-      class="fixed inset-y-0 left-0 bg-gray-100 max-h-screen w-[13em] overflow-y-auto top-[70px]"
+      class="fixed inset-y-0 left-0 bg-gray-100 max-h-screen w-[13em] overflow-y-auto top-0"
+    >
+      <h1>hello</h1>
+    </aside>
+    <aside
+      class="fixed inset-y-0 left-0 bg-gray-100 max-h-screen w-[13em] overflow-y-auto top-[4rem]"
     >
       <div class="flex flex-col justify-between h-full">
         <div class="px-2 py-4">
@@ -77,8 +82,16 @@
         </div>
       </div>
     </aside>
+
     <aside
-      class="fixed inset-y-0 left-[13em] w-[13em] bg-gray-50 max-h-screen w-50 overflow-y-auto top-[70px] overflow-hidden"
+      class="fixed inset-y-0 left-[13em] bg-gray-50 max-h-screen w-[13em] overflow-y-auto top-0"
+    >
+      <div class="flex justify-content-center align-items-center">
+        <h1>hello</h1>
+      </div>
+    </aside>
+    <aside
+      class="fixed inset-y-0 left-[13em] w-[13em] bg-gray-50 max-h-screen w-50 overflow-y-auto top-16 overflow-hidden"
     >
       <div class="flex flex-col justify-between h-full">
         <div class="p-4">
@@ -115,33 +128,44 @@
     <main
       class="ml-[25rem] pt-5 px-10 max-h-screen bg-white overflow-auto mt-[70px]"
     >
-      <div class="border rounded-xl h-[85vh]" id="code">
-        <div v-for="(item, key) in list" :key="key">
-          <pre><code class="language-markup">
-              <div>{{item}} </div>
-              </code></pre>
-        </div>
+      <div class="border rounded-2xl h-[85vh]" id="code">
+        <h1 class="text-center text-white my-3">index.js</h1>
+        <PrismEditor
+          class="my-editor"
+          v-model="code"
+          :highlight="highlighter"
+          line-numbers
+        ></PrismEditor>
       </div>
     </main>
   </div>
 </template>
 
 <script>
-import Prism from "prismjs";
-import "prismjs/themes/prism.css";
+// import Prism Editor
+import { PrismEditor } from "vue-prism-editor";
+import "vue-prism-editor/dist/prismeditor.min.css"; // import the styles somewhere
+
+// import highlighting library (you can use any library you want just return html string)
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-javascript";
+import "./assets/prism-onedark.css"; // import syntax highlighting styles
 
 export default {
   name: "App",
+  components: {
+    PrismEditor,
+  },
   data() {
     return {
       list: ["hello"],
+      code: "hello",
       navList: [{ label: "New" }, { label: "Favourites" }],
     };
   },
   mounted() {
     this.receiveMessage();
-    window.Prism = window.Prism || {};
-    Prism.highlightAll();
   },
   methods: {
     receiveMessage() {
@@ -149,6 +173,9 @@ export default {
         this.list.push(message);
         console.log(message); // Prints 'whoooooooh!'
       });
+    },
+    highlighter(code) {
+      return highlight(code, languages.js); // languages.<insert language> to return html with markup
     },
   },
 };
@@ -161,14 +188,18 @@ pre {
 }
 
 div#code {
-  background: #222;
+  background: #2d2d2d;
+}
+
+#code h1 {
+  font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
 }
 
 code {
   text-shadow: none;
 }
 
-.draggable {
+co .draggable {
   -webkit-user-select: none;
   user-select: none;
   -webkit-app-region: drag;
@@ -208,5 +239,24 @@ span#red {
 }
 ::-webkit-scrollbar-thumb {
   background: #eee;
+}
+
+/* required class */
+.my-editor {
+  /* we dont use `language-` classes anymore so thats why we need to add background and text color manually */
+  background: #2d2d2d;
+  border-radius: 35px;
+  color: #ccc;
+
+  /* you must provide font-family font-size line-height. Example: */
+  font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 5px;
+}
+
+/* optional class for removing the outline */
+.prism-editor__textarea:focus {
+  outline: none;
 }
 </style>
