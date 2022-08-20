@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import Prism from "prismjs";
 
 // Expose ipcRenderer to the client
 contextBridge.exposeInMainWorld("ipcRenderer", {
